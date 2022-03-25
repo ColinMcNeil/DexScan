@@ -6,4 +6,4 @@
 # Local Netlify folder
 .netlify
 
-.yarn
+.yarn/cache
