@@ -3,7 +3,10 @@
   command = "yarn build"
   functions = "netlify/functions"
   publish = "public"
+
 [build.environment]
+  NODE_VERSION = "16"
+  YARN_CACHE_FOLDER = "/opt/buildhome/.yarn_cache"
   YARN_VERSION = "3.2.0"
 
   ## Uncomment to use this redirect for Single Page Applications like create-react-app.
