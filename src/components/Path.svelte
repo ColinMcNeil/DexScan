@@ -1,6 +1,5 @@
 <script lang="ts">
   export let routes = null;
-  export let args = {};
   console.log(routes);
 </script>
 
