@@ -24,9 +24,28 @@ const fetchData = async (url) => {
 export const runScan = (params) => {
   return new Promise((res, rej) => {
     try {
-      fetchData(generateURL(params)).then((data) => {
-        console.log(data);
-        res(data);
+      fetchData(
+        generateURL({
+          ...params,
+          side: "BUY",
+          amount: params.amount * 10 ** params.destDecimals,
+        })
+      ).then((dataBuy) => {
+        console.log(dataBuy);
+        fetchData(
+          generateURL({
+            ...params,
+            side: "SELL",
+            srcToken: params.destToken,
+            destToken: params.srcToken,
+            srcDecimals: params.destDecimals,
+            destDecimals: params.srcDecimals,
+            amount: dataBuy.resp.priceRoute.destAmount,
+          })
+        ).then((dataSell) => {
+          console.log({ dataBuy, dataSell });
+          res({ dataBuy, dataSell });
+        });
       });
     } catch (e) {
       rej(e);
@@ -34,22 +53,11 @@ export const runScan = (params) => {
   });
 };
 
-export const parseRoute = (data) => {
-  const bestSwaps = data.resp.priceRoute.bestRoute[0].swaps;
-  const bestExchanges = data.resp.priceRoute.bestRoute[0].swaps.map(
-    (swap) => swap.swapExchanges
-  );
-  const worstEchange = data.resp.priceRoute.others.sort(
-    (a, b) => a.destAmount - b.destAmount
-  )[0];
+export const parseRoute = ({ dataBuy, dataSell }) => {
   return {
     timestamp: new Date().toLocaleString().replace(",", ""),
-    respTime: data.time + "ms",
-    worstAmount: parseInt(worstEchange.destAmount).toExponential(4),
-    worstExchange: [worstEchange],
-    bestAmount: parseInt(
-      bestSwaps[bestSwaps.length - 1].swapExchanges[0].destAmount
-    ).toExponential(4),
-    bestExchanges,
+    respTime: `Buy: ${dataBuy.time}ms, Sell: ${dataSell.time}`,
+    buyUSD: `${dataBuy.resp.priceRoute.srcUSD}`,
+    sellUSD: `${dataSell.resp.priceRoute.destUSD}`,
   };
 };

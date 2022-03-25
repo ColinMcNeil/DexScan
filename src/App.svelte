@@ -5,12 +5,11 @@
   let args = {
     srcToken: "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
     destToken: "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
-    amount: "1000000",
+    amount: "1",
     srcDecimals: 6,
     destDecimals: 18,
-    side: "SELL",
     network: 137,
-    otherExchangePrices: true,
+    // otherExchangePrices: true,
   };
 
   let items = [];
@@ -73,10 +72,6 @@
       />
     </div>
     <div class="block others">
-      <select id="side" on:change={updateForm}>
-        <option value="SELL">SELL</option>
-        <option value="BUY">BUY</option>
-      </select>
       <input
         id="amount"
         type="text"
@@ -106,19 +101,15 @@
     <div class="row header">
       <div>timestamp</div>
       <div>resp time</div>
-      <div>worst deal</div>
-      <div>worst dex</div>
-      <div>best deal</div>
-      <div>best dex</div>
+      <div>buy</div>
+      <div>sell</div>
     </div>
     {#each items as item}
       <div class="row item">
         <div>{item.timestamp}</div>
         <div>{item.respTime}</div>
-        <div>{(item.worstAmount / 10 ** args.destDecimals).toFixed(2)}</div>
-        <div><Path routes={item.worstExchange} /></div>
-        <div>{(item.bestAmount / 10 ** args.destDecimals).toFixed(2)}</div>
-        <div><Path routes={item.bestExchanges} /></div>
+        <div>{item.buyUSD}</div>
+        <div>{item.sellUSD}</div>
       </div>
     {/each}
   </div>
